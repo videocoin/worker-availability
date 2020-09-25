@@ -1,0 +1,16 @@
+image:
+  repository: registry.videocoin.net/worker-availability/job
+  pullPolicy: IfNotPresent
+  tag: v0.0.2
+  pullSecrets:
+    - name: regcred
+
+config:
+  AJ_URL: "https://console.videocoin.network/api/v1/miners/all"
+  AJ_PERIOD: "1m"
+  AJ_TIMEOUT: "1m"
+  AJ_RETRIES: 3
+  AJ_LOGLEVEL: "debug"
+
+serviceAccount:
+  name: default

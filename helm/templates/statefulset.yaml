@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+spec:
+  replicas: 1
+  serviceName: {{ .Release.Name }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      name: {{ .Release.Name }}
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      automountServiceAccountToken: true
+      volumes:
+        - name: vault-secrets
+          emptyDir: {}
+        - name: vault-token
+          emptyDir: {
+            medium: Memory
+          }
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecret }}
+      containers:
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}
+          {{ if .Values.resources }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          {{ end }}
+{{ if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 12 }}
+      {{- end }}
