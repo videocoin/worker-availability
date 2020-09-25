@@ -16,7 +16,7 @@ test:
 .PHONY: image
 image:
 	docker build -t ${JOB_IMAGE}:$(VERSION) -f _assets/Dockerfile .
-	docker tag ${JOB_IMAGE}:$(VERSION) ${IMAGE}:latest
+	docker tag ${JOB_IMAGE}:$(VERSION) ${JOB_IMAGE}:latest
 
 .PHONY: push
 push:
