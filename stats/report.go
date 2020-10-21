@@ -49,19 +49,22 @@ func CreateReport(appctx Context, start, end time.Time) (Report, error) {
 		rep       = Report{}
 		err       error
 		timestamp time.Time
-		init      = false
 		hasher    = sha256.New()
+		seen      = map[string]struct{}{}
 	)
 	err = appctx.DB.Process(appctx, start, end, func(record Aggregated) bool {
-		if !init {
-			timestamp = record.Timestamp
-			init = true
-			return true
-		}
 		d := record.Timestamp.Sub(timestamp)
-		appctx.Log.Debugf("delta between %v and %v - %v", record.Timestamp, timestamp, d)
+		if len(seen) > 0 {
+			// this value is used only after worker was observed.
+			appctx.Log.Debugf("delta between %v and %v - %v", record.Timestamp, timestamp, d)
+		}
 		timestamp = record.Timestamp
 		for _, miner := range record.Records {
+			if _, exist := seen[miner.Miner.Id]; !exist {
+				seen[miner.Miner.Id] = struct{}{}
+				continue
+			}
+
 			err = binary.Write(hasher, binary.LittleEndian, miner.Miner.SystemInfo.CpuCores)
 			if err != nil {
 				return false
