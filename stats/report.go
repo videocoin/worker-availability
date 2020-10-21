@@ -59,6 +59,8 @@ func CreateReport(appctx Context, start, end time.Time) (Report, error) {
 			return true
 		}
 		d := record.Timestamp.Sub(timestamp)
+		appctx.Log.Debugf("delta between %v and %v - %v", record.Timestamp, timestamp, d)
+		timestamp = record.Timestamp
 		for _, miner := range record.Records {
 			err = binary.Write(hasher, binary.LittleEndian, miner.Miner.SystemInfo.CpuCores)
 			if err != nil {
@@ -95,6 +97,7 @@ func CreateReport(appctx Context, start, end time.Time) (Report, error) {
 				if bytes.Compare(info.Configuration[last].Hash, hash) == 0 {
 					info.Configuration[last].Online += d
 				} else {
+					appctx.Log.Debugf("observed change of the configuration for worker %v", miner.Miner.Name)
 					info.Configuration = append(info.Configuration,
 						&ConfigurationInfo{Hash: hash, Online: d})
 				}
