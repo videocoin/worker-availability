@@ -12,9 +12,10 @@ import (
 )
 
 var (
-	start *string = flag.String("start", "", "Start of the range in the RFC3339 format 92006-01-02T15:04:05Z07:00).")
-	end   *string = flag.String("end", "", "End of the range in the RFC3339 format 92006-01-02T15:04:05Z07:00).")
-	csv   *string = flag.String("csv", "", "Output file with csv report. (by default will be printed to stdout.")
+	start    *string        = flag.String("start", "", "Start of the range in the RFC3339 format 92006-01-02T15:04:05Z07:00).")
+	end      *string        = flag.String("end", "", "End of the range in the RFC3339 format 92006-01-02T15:04:05Z07:00).")
+	duration *time.Duration = flag.Duration("duration", 24*time.Hour, "Duration can be specified instead of start/end timestamp.")
+	csv      *string        = flag.String("csv", "", "Output file with csv report. (by default will be printed to stdout.")
 )
 
 func main() {
@@ -33,13 +34,22 @@ func main() {
 		appctx.Log.Fatalf("failed to bootstrap application %v", err)
 	}
 
-	startT, err := time.Parse(time.RFC3339, *start)
-	if err != nil {
-		appctx.Log.Fatalf("failed to parse starting timestamp %v: %v", *start, err)
-	}
-	endT, err := time.Parse(time.RFC3339, *end)
-	if err != nil {
-		appctx.Log.Fatalf("failedd to parse ending timestamp %v: %v", *end, err)
+	var (
+		startT, endT time.Time
+	)
+
+	if len(*start) == 0 && len(*end) == 0 {
+		endT = time.Now()
+		startT = endT.Add(-*duration)
+	} else {
+		startT, err = time.Parse(time.RFC3339, *start)
+		if err != nil {
+			appctx.Log.Fatalf("failed to parse starting timestamp %v: %v", *start, err)
+		}
+		endT, err = time.Parse(time.RFC3339, *end)
+		if err != nil {
+			appctx.Log.Fatalf("failedd to parse ending timestamp %v: %v", *end, err)
+		}
 	}
 
 	var (
@@ -62,5 +72,4 @@ func main() {
 	if _, err := report.WriteTo(f); err != nil {
 		appctx.Log.Fatalf("failed to save report to the file %v", err)
 	}
-	appctx.Log.Infof("application finished")
 }

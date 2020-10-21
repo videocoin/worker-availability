@@ -9,6 +9,7 @@ RUN make build
 FROM alpine:latest
 
 COPY --from=builder /build/build/job /
+COPY --from=builder /build/build/rep /
 
 WORKDIR /
 ENTRYPOINT ["/job"]
