@@ -3,6 +3,7 @@ package stats
 import (
 	"bytes"
 	"crypto/sha256"
+	"encoding/binary"
 	"fmt"
 	"io"
 	"time"
@@ -59,17 +60,22 @@ func CreateReport(appctx Context, start, end time.Time) (Report, error) {
 		}
 		d := record.Timestamp.Sub(timestamp)
 		for _, miner := range record.Records {
-			system, merr := miner.Miner.SystemInfo.Marshal()
-			if err != nil {
-				err = merr
-				return false
-			}
-			_, err = hasher.Write(system)
+			err = binary.Write(hasher, binary.LittleEndian, miner.Miner.SystemInfo.CpuCores)
 			if err != nil {
 				return false
 			}
+			err = binary.Write(hasher, binary.LittleEndian, miner.Miner.SystemInfo.CpuFreq)
+			if err != nil {
+				return false
+			}
+			err = binary.Write(hasher, binary.LittleEndian, miner.Miner.SystemInfo.MemTotal)
+			if err != nil {
+				return false
+			}
+
 			hash := make([]byte, 0, 32)
 			hash = hasher.Sum(hash)
+			hasher.Reset()
 
 			info, exist := rep[miner.Miner.Name]
 			if !exist {
