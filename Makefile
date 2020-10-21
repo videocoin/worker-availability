@@ -4,7 +4,6 @@ VERSION ?= $(shell git describe --tags)
 .PHONY: build
 build:
 	go build -o ./build/job ./stats/job
-	go build -o ./build/rep ./stats/rep
 
 .PHONY: vendor
 vendor:

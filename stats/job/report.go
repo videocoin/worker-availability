@@ -18,7 +18,7 @@ var (
 	csv      *string        = flag.String("csv", "", "Output file with csv report. (by default will be printed to stdout.")
 )
 
-func main() {
+func report() {
 	flag.Parse()
 
 	ctx, cancel := context.WithCancel(context.Background())

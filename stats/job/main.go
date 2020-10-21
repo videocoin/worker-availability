@@ -9,6 +9,11 @@ import (
 )
 
 func main() {
+	if os.Args[1] == "report" {
+		report()
+		return
+	}
+
 	ctx, cancel := context.WithCancel(context.Background())
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, os.Interrupt)
