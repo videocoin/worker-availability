@@ -15,6 +15,11 @@ type Record struct {
 	Miner     *v1.MinerResponse
 }
 
+type Aggregated struct {
+	Timestamp time.Time `bson:"_id"`
+	Records   []Record
+}
+
 type DB struct {
 	Client *mongo.Collection
 }
@@ -25,7 +30,9 @@ func (db *DB) Save(ctx context.Context, records []interface{}) error {
 }
 
 func (db *DB) All(ctx context.Context) ([]Record, error) {
-	cursor, err := db.Client.Find(ctx, bson.M{}, new(options.FindOptions))
+	opts := new(options.FindOptions)
+	opts.SetSort(bson.D{{"timestamp", 1}})
+	cursor, err := db.Client.Find(ctx, bson.M{}, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -38,4 +45,40 @@ func (db *DB) All(ctx context.Context) ([]Record, error) {
 		rst = append(rst, record)
 	}
 	return rst, nil
+}
+
+// Process iterates over records in the specified range, aggregating them by timestamp.
+// Iterator function must return false if iteration must be stopped.
+func (db *DB) Process(ctx context.Context, start, end time.Time, f func(Aggregated) bool) error {
+	opts := new(options.AggregateOptions)
+	pipe := []bson.M{
+		{
+			"$match": bson.D{
+				{"timestamp", bson.M{"$gte": start}},
+				{"timestamp", bson.M{"$lte": end}}},
+		},
+		{
+			"$group": bson.M{
+				"_id":     "$timestamp",
+				"records": bson.M{"$push": bson.M{"miner": "$miner"}},
+			},
+		},
+		{
+			"$sort": bson.M{"_id": 1},
+		},
+	}
+	cursor, err := db.Client.Aggregate(ctx, pipe, opts)
+	if err != nil {
+		return err
+	}
+	for cursor.Next(ctx) {
+		record := Aggregated{}
+		if err := cursor.Decode(&record); err != nil {
+			return err
+		}
+		if !f(record) {
+			return nil
+		}
+	}
+	return nil
 }
