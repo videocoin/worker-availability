@@ -1,6 +1,7 @@
 package stats
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
@@ -47,9 +48,13 @@ func reportHandler(appctx Context) http.HandlerFunc {
 				return
 			}
 		}
-		report, err := CreateReport(appctx, startT, endT)
+		ctx, cancel := context.WithTimeout(req.Context(), appctx.C.ReadHTTPTimeout)
+		defer cancel()
+		report, err := CreateReport(appctx, ctx, startT, endT)
 		if err != nil {
-			appctx.Log.Errorf("failed to create a report: %v", err)
+			if !errors.Is(err, context.Canceled) {
+				appctx.Log.Errorf("failed to create a report: %v", err)
+			}
 			rw.WriteHeader(http.StatusInternalServerError)
 			fmt.Fprintln(rw, "Temporary internal error.")
 			return

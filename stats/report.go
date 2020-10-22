@@ -2,6 +2,7 @@ package stats
 
 import (
 	"bytes"
+	"context"
 	"crypto/sha256"
 	"encoding/binary"
 	"fmt"
@@ -44,7 +45,7 @@ type ConfigurationInfo struct {
 	Online time.Duration
 }
 
-func CreateReport(appctx Context, start, end time.Time) (Report, error) {
+func CreateReport(appctx Context, ctx context.Context, start, end time.Time) (Report, error) {
 	var (
 		rep       = Report{}
 		err       error
@@ -52,7 +53,7 @@ func CreateReport(appctx Context, start, end time.Time) (Report, error) {
 		hasher    = sha256.New()
 		seen      = map[string]struct{}{}
 	)
-	err = appctx.DB.Process(appctx, start, end, func(record Aggregated) bool {
+	err = appctx.DB.Process(ctx, start, end, func(record Aggregated) bool {
 		d := record.Timestamp.Sub(timestamp)
 		if len(seen) > 0 {
 			// this value is used only after worker was observed.

@@ -42,7 +42,7 @@ func TestReport(t *testing.T) {
 	require.NoError(t, err)
 
 	require.NoError(t, appctx.DB.Save(context.TODO(), records))
-	report, err := CreateReport(appctx, now, t2)
+	report, err := CreateReport(appctx, context.TODO(), now, t2)
 	require.NoError(t, err)
 	report.WriteTo(os.Stdout)
 }
