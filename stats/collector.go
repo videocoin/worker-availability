@@ -30,13 +30,17 @@ func FromEnv() (cfg Config) {
 }
 
 type Config struct {
-	URL      string        `default:"https://console.videocoin.network/api/v1/miners/all"`
-	Mongo    string        `default:"mongodb://localhost:27017"`
-	Database string        `default:"availability"`
-	Period   time.Duration `default:"1m"`
-	Timeout  time.Duration `default:"1m"`
-	Retries  int           `default:"3"`
-	LogLevel string        `default:"debug"`
+	URL              string        `default:"https://console.videocoin.network/api/v1/miners/all"`
+	Mongo            string        `default:"mongodb://localhost:27017"`
+	Database         string        `default:"availability"`
+	Period           time.Duration `default:"1m"`
+	Timeout          time.Duration `default:"1m"`
+	Retries          int           `default:"3"`
+	LogLevel         string        `default:"debug"`
+	ReadHTTPTimeout  time.Duration `default:"10s"`
+	WriteHTTPTimeout time.Duration `default:"30s"`
+	Address          string        `default:"0.0.0.0:8000"`
+	MaxHeaderBytes   int           `default:"4096"`
 }
 
 func NewContext(ctx context.Context, cfg Config) (appctx Context, err error) {
