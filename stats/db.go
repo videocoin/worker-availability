@@ -51,6 +51,7 @@ func (db *DB) All(ctx context.Context) ([]Record, error) {
 // Iterator function must return false if iteration must be stopped.
 func (db *DB) Process(ctx context.Context, start, end time.Time, f func(Aggregated) bool) error {
 	opts := new(options.AggregateOptions)
+	opts = opts.SetAllowDiskUse(true)
 	pipe := []bson.M{
 		{
 			"$match": bson.D{
