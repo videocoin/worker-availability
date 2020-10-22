@@ -48,7 +48,7 @@ func reportHandler(appctx Context) http.HandlerFunc {
 				return
 			}
 		}
-		ctx, cancel := context.WithTimeout(req.Context(), appctx.C.ReadHTTPTimeout)
+		ctx, cancel := context.WithTimeout(req.Context(), appctx.C.WriteHTTPTimeout)
 		defer cancel()
 		report, err := CreateReport(appctx, ctx, startT, endT)
 		if err != nil {

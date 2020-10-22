@@ -38,7 +38,7 @@ type Config struct {
 	Retries          int           `default:"3"`
 	LogLevel         string        `default:"debug"`
 	ReadHTTPTimeout  time.Duration `default:"10s"`
-	WriteHTTPTimeout time.Duration `default:"30s"`
+	WriteHTTPTimeout time.Duration `default:"5m"`
 	Address          string        `default:"0.0.0.0:8000"`
 	MaxHeaderBytes   int           `default:"4096"`
 }
