@@ -3,19 +3,17 @@ Worker uptime monitoring
 
 ## Collector component
 
-
 Periodically stores worker into the database. Currently mongodb.
-
 
 ## Reporting server
 
-HTTP server that on GET request such as:
+Reporting server deployed at https://uptimereport.videocoin.net/. Uses oauth2 for the authentication.
 
-```
-curl "http://0.0.0.0:8000/report?start=2020-10-02T10:00:00-05:00&end=2021-10-02T10:00:00-05:00"
-```
+The easiest way to get the report would to open the page `https://uptimereport.videocoin.net/report?start=2020-09-25T10:00:00-05:00&end=2020-10-25T10:00:00-05:00` in the browser and wait for report to generate.
 
-Will produce csv report:
+Timestamps are in [rfc3339 format](https://tools.ietf.org/html/rfc3339).
+
+The expected output would be csv report in format below:
 
 ```
 worker,client_id,worker_address,configuration_hash,duration_online
