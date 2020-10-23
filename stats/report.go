@@ -119,7 +119,11 @@ func CreateReport(appctx Context, ctx context.Context, start, end time.Time) (Re
 						&ConfigurationInfo{
 							Hash:      hash,
 							Online:    d,
-							AccOnline: d + info.Configuration[last].Online,
+							AccOnline: d + info.Configuration[last].AccOnline,
+
+							CPU:     miner.Miner.SystemInfo.CpuCores,
+							CPUFreq: miner.Miner.SystemInfo.CpuFreq,
+							Memory:  miner.Miner.SystemInfo.MemTotal,
 						})
 				}
 			}
