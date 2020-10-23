@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"io"
 	"time"
+
+	v1 "github.com/videocoin/cloud-api/miners/v1"
 )
 
 type Report map[string]*WorkerInfo
@@ -16,14 +18,14 @@ func (r Report) WriteTo(w io.Writer) (total int, err error) {
 	var (
 		n int
 	)
-	n, err = fmt.Fprintln(w, "worker,client_id,worker_address,configuration_hash,duration_online")
+	n, err = fmt.Fprintln(w, "worker,client_id,worker_address,configuration_hash,duration_online,cpu_count,cpu_freq,memory")
 	if err != nil {
 		return
 	}
 	total += n
 	for _, info := range r {
 		for _, conf := range info.Configuration {
-			n, err = fmt.Fprintf(w, "%s,%s,%s,0x%x,%v\n", info.Name, info.ClientID, info.Address, conf.Hash, conf.Online)
+			n, err = fmt.Fprintf(w, "%s,%s,%s,0x%x,%v,%v,%v,%v\n", info.Name, info.ClientID, info.Address, conf.Hash, conf.Online, conf.CPU, conf.CPUFreq, conf.Memory)
 			if err != nil {
 				return
 			}
@@ -41,8 +43,11 @@ type WorkerInfo struct {
 }
 
 type ConfigurationInfo struct {
-	Hash   []byte
-	Online time.Duration
+	Hash    []byte
+	CPU     float64
+	CPUFreq float64
+	Memory  float64
+	Online  time.Duration
 }
 
 func CreateReport(appctx Context, ctx context.Context, start, end time.Time) (Report, error) {
@@ -63,6 +68,9 @@ func CreateReport(appctx Context, ctx context.Context, start, end time.Time) (Re
 		for _, miner := range record.Records {
 			if _, exist := seen[miner.Miner.Id]; !exist {
 				seen[miner.Miner.Id] = struct{}{}
+				continue
+			}
+			if miner.Miner.Status == v1.MinerStatusOffline {
 				continue
 			}
 
@@ -92,8 +100,11 @@ func CreateReport(appctx Context, ctx context.Context, start, end time.Time) (Re
 				info.Address = miner.Miner.Address
 				info.Configuration = []*ConfigurationInfo{
 					{
-						Hash:   hash,
-						Online: d,
+						Hash:    hash,
+						Online:  d,
+						CPU:     miner.Miner.SystemInfo.CpuCores,
+						CPUFreq: miner.Miner.SystemInfo.CpuFreq,
+						Memory:  miner.Miner.SystemInfo.MemTotal,
 					},
 				}
 			} else {
