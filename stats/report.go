@@ -18,14 +18,14 @@ func (r Report) WriteTo(w io.Writer) (total int, err error) {
 	var (
 		n int
 	)
-	n, err = fmt.Fprintln(w, "worker,client_id,worker_address,configuration_hash,duration_online,cpu_count,cpu_freq,memory")
+	n, err = fmt.Fprintln(w, "worker,client_id,worker_address,configuration_hash,cpu_count,cpu_freq,memory,duration_online,accumulated_duration_online")
 	if err != nil {
 		return
 	}
 	total += n
 	for _, info := range r {
 		for _, conf := range info.Configuration {
-			n, err = fmt.Fprintf(w, "%s,%s,%s,0x%x,%v,%v,%v,%v\n", info.Name, info.ClientID, info.Address, conf.Hash, conf.Online, conf.CPU, conf.CPUFreq, conf.Memory)
+			n, err = fmt.Fprintf(w, "%s,%s,%s,0x%x,%v,%v,%v,%v,%v\n", info.Name, info.ClientID, info.Address, conf.Hash, conf.CPU, conf.CPUFreq, conf.Memory, conf.Online, conf.AccOnline)
 			if err != nil {
 				return
 			}
@@ -43,11 +43,11 @@ type WorkerInfo struct {
 }
 
 type ConfigurationInfo struct {
-	Hash    []byte
-	CPU     float64
-	CPUFreq float64
-	Memory  float64
-	Online  time.Duration
+	Hash              []byte
+	CPU               float64
+	CPUFreq           float64
+	Memory            float64
+	Online, AccOnline time.Duration
 }
 
 func CreateReport(appctx Context, ctx context.Context, start, end time.Time) (Report, error) {
@@ -100,24 +100,29 @@ func CreateReport(appctx Context, ctx context.Context, start, end time.Time) (Re
 				info.Address = miner.Miner.Address
 				info.Configuration = []*ConfigurationInfo{
 					{
-						Hash:    hash,
-						Online:  d,
-						CPU:     miner.Miner.SystemInfo.CpuCores,
-						CPUFreq: miner.Miner.SystemInfo.CpuFreq,
-						Memory:  miner.Miner.SystemInfo.MemTotal,
+						Hash:      hash,
+						Online:    d,
+						AccOnline: d,
+						CPU:       miner.Miner.SystemInfo.CpuCores,
+						CPUFreq:   miner.Miner.SystemInfo.CpuFreq,
+						Memory:    miner.Miner.SystemInfo.MemTotal,
 					},
 				}
 			} else {
 				last := len(info.Configuration) - 1
 				if bytes.Compare(info.Configuration[last].Hash, hash) == 0 {
 					info.Configuration[last].Online += d
+					info.Configuration[last].AccOnline += d
 				} else {
 					appctx.Log.Debugf("observed change of the configuration for worker %v", miner.Miner.Name)
 					info.Configuration = append(info.Configuration,
-						&ConfigurationInfo{Hash: hash, Online: d})
+						&ConfigurationInfo{
+							Hash:      hash,
+							Online:    d,
+							AccOnline: d + info.Configuration[last].Online,
+						})
 				}
 			}
-
 		}
 		return true
 	})
