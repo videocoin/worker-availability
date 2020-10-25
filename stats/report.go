@@ -18,14 +18,14 @@ func (r Report) WriteTo(w io.Writer) (total int, err error) {
 	var (
 		n int
 	)
-	n, err = fmt.Fprintln(w, "worker,client_id,worker_address,configuration_hash,cpu_count,cpu_freq,memory,duration_online,accumulated_duration_online")
+	n, err = fmt.Fprintln(w, "worker,client_id,worker_address,configuration_hash,cpu_count,cpu_freq,memory,direct_stake,duration_online,accumulated_duration_online")
 	if err != nil {
 		return
 	}
 	total += n
 	for _, info := range r {
 		for _, conf := range info.Configuration {
-			n, err = fmt.Fprintf(w, "%s,%s,%s,0x%x,%v,%v,%v,%v,%v\n", info.Name, info.ClientID, info.Address, conf.Hash, conf.CPU, conf.CPUFreq, conf.Memory, conf.Online, conf.AccOnline)
+			n, err = fmt.Fprintf(w, "%s,%s,%s,0x%x,%v,%v,%v,%v,%v,%v\n", info.Name, info.ClientID, info.Address, conf.Hash, conf.CPU, conf.CPUFreq, conf.Memory, conf.DirectStake, conf.Online, conf.AccOnline)
 			if err != nil {
 				return
 			}
@@ -47,6 +47,7 @@ type ConfigurationInfo struct {
 	CPU               float64
 	CPUFreq           float64
 	Memory            float64
+	DirectStake       float64
 	Online, AccOnline time.Duration
 }
 
@@ -86,6 +87,10 @@ func CreateReport(appctx Context, ctx context.Context, start, end time.Time) (Re
 			if err != nil {
 				return false
 			}
+			err = binary.Write(hasher, binary.LittleEndian, miner.Miner.SelfStake)
+			if err != nil {
+				return false
+			}
 
 			hash := make([]byte, 0, 32)
 			hash = hasher.Sum(hash)
@@ -100,12 +105,13 @@ func CreateReport(appctx Context, ctx context.Context, start, end time.Time) (Re
 				info.Address = miner.Miner.Address
 				info.Configuration = []*ConfigurationInfo{
 					{
-						Hash:      hash,
-						Online:    d,
-						AccOnline: d,
-						CPU:       miner.Miner.SystemInfo.CpuCores,
-						CPUFreq:   miner.Miner.SystemInfo.CpuFreq,
-						Memory:    miner.Miner.SystemInfo.MemTotal,
+						Hash:        hash,
+						Online:      d,
+						AccOnline:   d,
+						CPU:         miner.Miner.SystemInfo.CpuCores,
+						CPUFreq:     miner.Miner.SystemInfo.CpuFreq,
+						Memory:      miner.Miner.SystemInfo.MemTotal,
+						DirectStake: miner.Miner.SelfStake,
 					},
 				}
 			} else {
@@ -121,9 +127,10 @@ func CreateReport(appctx Context, ctx context.Context, start, end time.Time) (Re
 							Online:    d,
 							AccOnline: d + info.Configuration[last].AccOnline,
 
-							CPU:     miner.Miner.SystemInfo.CpuCores,
-							CPUFreq: miner.Miner.SystemInfo.CpuFreq,
-							Memory:  miner.Miner.SystemInfo.MemTotal,
+							CPU:         miner.Miner.SystemInfo.CpuCores,
+							CPUFreq:     miner.Miner.SystemInfo.CpuFreq,
+							Memory:      miner.Miner.SystemInfo.MemTotal,
+							DirectStake: miner.Miner.SelfStake,
 						})
 				}
 			}
