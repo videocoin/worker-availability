@@ -18,14 +18,14 @@ func (r Report) WriteTo(w io.Writer) (total int, err error) {
 	var (
 		n int
 	)
-	n, err = fmt.Fprintln(w, "worker,client_id,worker_address,configuration_hash,cpu_count,cpu_freq,memory,direct_stake,duration_online,accumulated_duration_online")
+	n, err = fmt.Fprintln(w, "worker,client_id,worker_address,configuration_hash,cpu_count,cpu_freq,memory,direct_stake,duration_online,accumulated_duration_online,incentive")
 	if err != nil {
 		return
 	}
 	total += n
 	for _, info := range r {
 		for _, conf := range info.Configuration {
-			n, err = fmt.Fprintf(w, "%s,%s,%s,0x%x,%v,%v,%v,%v,%v,%v\n", info.Name, info.ClientID, info.Address, conf.Hash, conf.CPU, conf.CPUFreq, conf.Memory, conf.DirectStake, conf.Online, conf.AccOnline)
+			n, err = fmt.Fprintf(w, "%s,%s,%s,0x%x,%v,%v,%v,%v,%v,%v,%v\n", info.Name, info.ClientID, info.Address, conf.Hash, conf.CPU, conf.CPUFreq, conf.Memory, conf.DirectStake, conf.Online, conf.AccOnline, conf.Incentive)
 			if err != nil {
 				return
 			}
@@ -49,6 +49,7 @@ type ConfigurationInfo struct {
 	Memory            float64
 	DirectStake       float64
 	Online, AccOnline time.Duration
+	Incentive         float64
 }
 
 func CreateReport(appctx Context, ctx context.Context, start, end time.Time) (Report, error) {
@@ -60,6 +61,7 @@ func CreateReport(appctx Context, ctx context.Context, start, end time.Time) (Re
 		seen      = map[string]struct{}{}
 	)
 	err = appctx.DB.Process(ctx, start, end, func(record Aggregated) bool {
+		const incentivePerHour = 14.0 / (360.0 * 24.0)
 		d := record.Timestamp.Sub(timestamp)
 		if len(seen) > 0 {
 			// this value is used only after worker was observed.
@@ -108,6 +110,7 @@ func CreateReport(appctx Context, ctx context.Context, start, end time.Time) (Re
 						Hash:        hash,
 						Online:      d,
 						AccOnline:   d,
+						Incentive:   d.Hours() * incentivePerHour * miner.Miner.SelfStake,
 						CPU:         miner.Miner.SystemInfo.CpuCores,
 						CPUFreq:     miner.Miner.SystemInfo.CpuFreq,
 						Memory:      miner.Miner.SystemInfo.MemTotal,
@@ -123,10 +126,10 @@ func CreateReport(appctx Context, ctx context.Context, start, end time.Time) (Re
 					appctx.Log.Debugf("observed change of the configuration for worker %v", miner.Miner.Name)
 					info.Configuration = append(info.Configuration,
 						&ConfigurationInfo{
-							Hash:      hash,
-							Online:    d,
-							AccOnline: d + info.Configuration[last].AccOnline,
-
+							Hash:        hash,
+							Online:      d,
+							AccOnline:   d + info.Configuration[last].AccOnline,
+							Incentive:   (d.Hours() + info.Configuration[last].AccOnline.Hours()) * incentivePerHour * miner.Miner.SelfStake,
 							CPU:         miner.Miner.SystemInfo.CpuCores,
 							CPUFreq:     miner.Miner.SystemInfo.CpuFreq,
 							Memory:      miner.Miner.SystemInfo.MemTotal,
