@@ -12,6 +12,12 @@ func main() {
 	if len(os.Args) > 1 && os.Args[1] == "report" {
 		report()
 		return
+	} else if len(os.Args) > 4 && os.Args[1] == "incentives" {
+		fileName := os.Args[2]
+		startTime := os.Args[3]
+		endTime := os.Args[4]
+		incentives(fileName, startTime, endTime)
+		return
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
