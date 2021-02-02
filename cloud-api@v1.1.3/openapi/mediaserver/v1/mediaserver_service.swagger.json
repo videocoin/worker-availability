@@ -1,0 +1,66 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "mediaserver/v1/mediaserver_service.proto",
+    "version": "version not set"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/ms/streams/webrtc": {
+      "post": {
+        "operationId": "CreateWebRTCStream",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1WebRTCStreamResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1StreamRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MediaServerService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "v1StreamRequest": {
+      "type": "object",
+      "properties": {
+        "stream_id": {
+          "type": "string"
+        },
+        "sdp": {
+          "type": "string"
+        }
+      }
+    },
+    "v1WebRTCStreamResponse": {
+      "type": "object",
+      "properties": {
+        "sdp": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
