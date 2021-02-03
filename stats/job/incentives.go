@@ -9,7 +9,7 @@ import (
 	"github.com/videocoin/worker-availablity/stats"
 )
 
-func incentives(fileName string, startTime  string, endTime  string) {
+func incentives(fileIncentives string, fileUptime string, startTime  string, endTime  string) {
 	ctx, cancel := context.WithCancel(context.Background())
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, os.Interrupt)
@@ -31,7 +31,7 @@ func incentives(fileName string, startTime  string, endTime  string) {
 		appctx.Log.Fatalf("failed to parse end time %v", err)
 	}
 
-	if err := stats.CreateIncentives(appctx, ctx, fileName, start, end); err != nil {
+	if err := stats.CreateIncentives(appctx, ctx, fileIncentives, fileUptime, start, end); err != nil {
 		appctx.Log.Fatalf("incentive creation failed %v", err)
 	}	
 }
