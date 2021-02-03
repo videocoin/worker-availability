@@ -12,11 +12,12 @@ func main() {
 	if len(os.Args) > 1 && os.Args[1] == "report" {
 		report()
 		return
-	} else if len(os.Args) > 4 && os.Args[1] == "incentives" {
-		fileName := os.Args[2]
-		startTime := os.Args[3]
-		endTime := os.Args[4]
-		incentives(fileName, startTime, endTime)
+	} else if len(os.Args) > 5 && os.Args[1] == "incentives" {
+		fileIncentives := os.Args[2]
+		fileUptime := os.Args[3]
+		startTime := os.Args[4]
+		endTime := os.Args[5]
+		incentives(fileIncentives, fileUptime, startTime, endTime)
 		return
 	}
 
