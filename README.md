@@ -29,16 +29,18 @@ mainstream01,3a940856-9fff-4fba-ba66-9544caa7ac65,0x313CCd0dDc016899296CCDB5Ad89
 
 Command format:
 ```
-job incentives <payment-file> <start-time> <end-time>
+job incentives <payment-file> <report-file> <start-time> <end-time>
 ```
 Timestamps are in [rfc3339 format](https://tools.ietf.org/html/rfc3339).
 
 Example:
 ```
-job incentives test1.csv 2020-12-25T10:00:00-08:00 2021-01-21T22:40:00-08:00
+job incentives test1.csv test1.txt 2020-12-25T10:00:00-08:00 2021-01-25T10:00:00-08:00
 ```
 
 Expected oputput format:
+
+Incentives Report (example:test1.csv)
 ```
 0x17E69e6E218aFD89163a07A3594E7723Ef96C08d,0.0320312249228395
 0xc79E58d92ef1baf5a9937bB159f82fa677378598,0.03203506790123457
@@ -49,4 +51,11 @@ Expected oputput format:
 0x1ee8A8AB4f536332dD62d581Be3C393693c2132B,1.3503086419753085
 0x83674506133d4D8cd3C4c31E8A9937470604dd2d,1.3503086419753085
 0xDbc1C1a9c492aEa9C463b5fD83Cb835836787De7,0.0320312249228395
+```
+Uptime Report (example:test1.txt)
+```
+worker,client_id,worker_address,configuration_hash,cpu_count,cpu_freq,memory,direct_stake,duration_online,accumulated_duration_online
+BDC.USA.MA.PILOT.1.B.3,ae4ba849-ace8-4727-a2e6-c0fba9534146,0xe21F4126dF74b54e1c6183bD0AA3D0cBC2275839,0xe07e79e90906dccd9e5c39903ae4ac187424f4a4e2861a09e47f40ab87767141,16,5100,1.6693895168e+10,50000,50m0s,50m0s
+BDC.USA.MA.PILOT.1.D.1,c8c8dff0-7859-4f80-96bf-1a68fae98012,0xcc67109C41BA6ddD79A524E161E0bE2E1ac3EDb1,0x089ada15b0e2c584e32881b6ab8b3f954e896e8e38189e83b2b4719214fce9b7,16,5000,1.6636416e+10,50000,49m0s,49m0s
+BDC.USA.MA.PILOT.1.C.2,e2cebbd6-a43d-4cb6-ae19-7562554831d7,0xd5e5643acA6dF83741Cba1742e7D646Ef1CB37b8,0xeea5ffa216320f026ac501db978c6124cf6a17e70c344f81516409a2601596aa,16,5000,1.6695320576e+10,51000,49m0s,49m0s
 ```
