@@ -1,5 +1,7 @@
 module github.com/videocoin/worker-availablity
 
+replace github.com/videocoin/cloud-api => /tmp/cloud-api
+
 go 1.14
 
 require (

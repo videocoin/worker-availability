@@ -1,0 +1,642 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Videocoin api",
+    "version": "1.0"
+  },
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/profiles": {
+      "get": {
+        "summary": "This API call returns a list of supported output transcoding profiles. Most notably, the items in the response list the ID of a profile which is required when creating a new stream object.",
+        "operationId": "GetProfileList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ProfileListResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when the user is not logged in.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "example": {
+                "message": "Not found",
+                "fields": null
+              }
+            }
+          }
+        },
+        "tags": [
+          "StreamsService"
+        ]
+      }
+    },
+    "/api/v1/streams": {
+      "get": {
+        "summary": "This API call gets all streams that belongs to a specific account.",
+        "operationId": "List",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1StreamListResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when the user is not logged in.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "example": {
+                "message": "Not found",
+                "fields": null
+              }
+            }
+          }
+        },
+        "tags": [
+          "StreamsService"
+        ]
+      },
+      "post": {
+        "summary": "This API call creates a new stream with the specified name and output transcoding profile. A stream object is returned from this API call.",
+        "operationId": "Create",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1StreamResponse"
+            }
+          },
+          "400": {
+            "description": "Stream has been failed to create because a required field is missing.",
+            "schema": {
+              "example": {
+                "message": "invalid argument",
+                "fields": {
+                  "name": "Name is a required field"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Returned when the user is not logged in.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "example": {
+                "message": "Not found",
+                "fields": null
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateStreamRequest"
+            }
+          }
+        ],
+        "tags": [
+          "StreamsService"
+        ]
+      }
+    },
+    "/api/v1/streams/{id}": {
+      "get": {
+        "summary": "This API call gets the details of the stream associated with the ID passed. The stream must belong to the account specified",
+        "operationId": "Get",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1StreamResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when the user is not logged in.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "example": {
+                "message": "Not found",
+                "fields": null
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Stream ID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "StreamsService"
+        ]
+      },
+      "delete": {
+        "summary": "This API call deletes the stream with the specified ID.",
+        "operationId": "Delete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          },
+          "401": {
+            "description": "Returned when the user is not logged in.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "example": {
+                "message": "Not found",
+                "fields": null
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Stream ID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "StreamsService"
+        ]
+      },
+      "put": {
+        "summary": "This API call modify the stream with the specified ID.",
+        "operationId": "Update",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1StreamResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when the user is not logged in.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "example": {
+                "message": "Not found",
+                "fields": null
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Stream ID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateStreamRequest"
+            }
+          }
+        ],
+        "tags": [
+          "StreamsService"
+        ]
+      }
+    },
+    "/api/v1/streams/{id}/run": {
+      "post": {
+        "summary": "This API call transitions a newly created stream to begin preparing input and output destinations.",
+        "operationId": "Run",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1StreamResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when the user is not logged in.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "example": {
+                "message": "Not found",
+                "fields": null
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Stream ID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "StreamsService"
+        ]
+      }
+    },
+    "/api/v1/streams/{id}/stop": {
+      "post": {
+        "summary": "This API call stops or cancels a stream based on its input and output destination state.",
+        "operationId": "Stop",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1StreamResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when the user is not logged in.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "example": {
+                "message": "Not found",
+                "fields": null
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Stream ID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "StreamsService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "v1CapacityInfo": {
+      "type": "object",
+      "properties": {
+        "encode": {
+          "type": "number",
+          "format": "double"
+        },
+        "cpu": {
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
+    "v1CreateStreamRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of stream being created. Length is between 1 and 255 symbols.",
+          "required": [
+            "name"
+          ]
+        },
+        "profile_id": {
+          "type": "string",
+          "description": "ID of output transcoding profile that will be used to transcode the incoming stream. Read more under Profiles section.",
+          "required": [
+            "profile_id"
+          ]
+        },
+        "input_type": {
+          "$ref": "#/definitions/v1InputType",
+          "description": "Input type of stream",
+          "required": [
+            "input_type"
+          ]
+        },
+        "output_type": {
+          "$ref": "#/definitions/v1OutputType",
+          "description": "Output type of stream",
+          "required": [
+            "output_type"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "profile_id"
+      ]
+    },
+    "v1InputStatus": {
+      "type": "string",
+      "enum": [
+        "INPUT_STATUS_NONE",
+        "INPUT_STATUS_PENDING",
+        "INPUT_STATUS_ACTIVE",
+        "INPUT_STATUS_ERROR"
+      ],
+      "default": "INPUT_STATUS_NONE",
+      "description": "The status of a stream's ingest is affected by the state of the encoder that's sending video data to the stream.\n\n - INPUT_STATUS_NONE: The stream has been created or has ended and is not receiving any input\n - INPUT_STATUS_PENDING: Ingest is awaiting for incoming data\n - INPUT_STATUS_ACTIVE: Ingest is receiving data\n - INPUT_STATUS_ERROR: Ingest has been failed to process incoming data"
+    },
+    "v1InputType": {
+      "type": "string",
+      "enum": [
+        "INPUT_TYPE_RTMP",
+        "INPUT_TYPE_WEBRTC",
+        "INPUT_TYPE_FILE"
+      ],
+      "default": "INPUT_TYPE_RTMP"
+    },
+    "v1OutputType": {
+      "type": "string",
+      "enum": [
+        "OUTPUT_TYPE_HLS",
+        "OUTPUT_TYPE_FILE"
+      ],
+      "default": "OUTPUT_TYPE_HLS"
+    },
+    "v1ProfileListResponse": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1ProfileResponse"
+          }
+        }
+      }
+    },
+    "v1ProfileResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "is_enabled": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "capacity": {
+          "$ref": "#/definitions/v1CapacityInfo"
+        }
+      }
+    },
+    "v1StreamListResponse": {
+      "type": "object",
+      "example": {
+        "id": "4a1c3973-8cf6-49af-4a56-7a1d49c2bac6",
+        "name": "Live",
+        "output_url": "https://streams.videocoin.network/4a1c3973-8cf6-49af-4a56-7a1d49c2bac6/index.m3u8",
+        "stream_contract_id": "2758350251200610030",
+        "stream_contract_address": "",
+        "status": "STREAM_STATUS_NEW",
+        "input_status": "INPUT_STATUS_NONE",
+        "created_at": "2019-11-06T19:31:03.059408235Z",
+        "updated_at": "2019-11-06T19:31:03.059460430Z",
+        "ready_at": null,
+        "completed_at": null,
+        "rtmp_url": "rtmp://rtmp.studio.videocoin.network:1935/live/4a1c3973-8cf6-49af-4a56-7a1d49c2bac6"
+      },
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1StreamResponse"
+          }
+        }
+      },
+      "description": "List of streams."
+    },
+    "v1StreamResponse": {
+      "type": "object",
+      "example": {
+        "id": "4a1c3973-8cf6-49af-4a56-7a1d49c2bac6",
+        "name": "Live",
+        "output_url": "https://streams.videocoin.network/4a1c3973-8cf6-49af-4a56-7a1d49c2bac6/index.m3u8",
+        "stream_contract_id": "2758350251200610030",
+        "stream_contract_address": "",
+        "status": "STREAM_STATUS_NEW",
+        "input_status": "INPUT_STATUS_NONE",
+        "created_at": "2019-11-06T19:31:03.059408235Z",
+        "updated_at": "2019-11-06T19:31:03.059460430Z",
+        "ready_at": null,
+        "completed_at": null,
+        "rtmp_url": "rtmp://rtmp.studio.videocoin.network:1935/live/4a1c3973-8cf6-49af-4a56-7a1d49c2bac6"
+      },
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "ID that VideoCoin uses to uniquely identify each stream"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the stream"
+        },
+        "output_url": {
+          "type": "string",
+          "description": "Unique output URL of transcoded video"
+        },
+        "stream_contract_id": {
+          "type": "string",
+          "format": "uint64",
+          "description": "Stream ID in VideoCoin stream chain"
+        },
+        "stream_contract_address": {
+          "type": "string",
+          "description": "Stream hex address in VideoCoin chain. Empty until stream is in prepared state"
+        },
+        "status": {
+          "$ref": "#/definitions/v1StreamStatus",
+          "description": "Status of the stream's operational state"
+        },
+        "input_status": {
+          "$ref": "#/definitions/v1InputStatus",
+          "description": "Status of the stream's video ingest"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time of when stream was initially created"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time of when stream's state was last changed"
+        },
+        "ready_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time of when stream's ingest has received and completed processing input video data. This field will be null until stream is in ready state"
+        },
+        "completed_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time of when stream was called to stop. This field will be null until stream is in completed state"
+        },
+        "rtmp_url": {
+          "type": "string",
+          "description": "Unique ingest RTMP URL for stream to receive video data from encoder. This URL is used for your encoder to send data to"
+        },
+        "input_type": {
+          "$ref": "#/definitions/v1InputType"
+        },
+        "output_type": {
+          "$ref": "#/definitions/v1OutputType"
+        },
+        "total_cost": {
+          "type": "number",
+          "format": "double"
+        }
+      },
+      "description": "Streams are representations of video to be worked on by miners on the VideoCoin Network and output consumable video based on the transcoding profile given at creation. Streams currently only support video input over RTMP. Support for input video over RTSP and HLS will be considered in future releases."
+    },
+    "v1StreamStatus": {
+      "type": "string",
+      "enum": [
+        "STREAM_STATUS_NONE",
+        "STREAM_STATUS_NEW",
+        "STREAM_STATUS_PREPARING",
+        "STREAM_STATUS_PREPARED",
+        "STREAM_STATUS_PENDING",
+        "STREAM_STATUS_PROCESSING",
+        "STREAM_STATUS_READY",
+        "STREAM_STATUS_COMPLETED",
+        "STREAM_STATUS_CANCELLED",
+        "STREAM_STATUS_FAILED",
+        "STREAM_STATUS_DELETED"
+      ],
+      "default": "STREAM_STATUS_NONE",
+      "description": "The status of a stream is affected by API calls made on a stream object.\n\n - STREAM_STATUS_NONE: Status not set\n - STREAM_STATUS_NEW: Initially created and no actions have been taken\n - STREAM_STATUS_PREPARING: Running and preparing input and output destinations\n - STREAM_STATUS_PREPARED: Preparation is finished and is ready to consume input data\n - STREAM_STATUS_PENDING: Receiving data and pending on miner to be assigned to stream\n - STREAM_STATUS_PROCESSING: Miner has started work on stream, but output is not ready for use\n - STREAM_STATUS_READY: Output destination is ready to be consumed\n - STREAM_STATUS_COMPLETED: Stream has successfully transcoded video and is now complete\n - STREAM_STATUS_CANCELLED: Stream has not yet received any input data and has been cancelled\n - STREAM_STATUS_FAILED: Stream has attempted to transcode video received, but problems with the transcoder or account caused it to fail"
+    },
+    "v1UpdateStreamRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Stream ID"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of stream being created. Length is between 1 and 255 symbols"
+        },
+        "stream_contract_id": {
+          "type": "string",
+          "format": "uint64",
+          "description": "Stream ID in VideoCoin stream chain"
+        },
+        "stream_contract_address": {
+          "type": "string",
+          "description": "Stream contract address"
+        },
+        "status": {
+          "$ref": "#/definitions/v1StreamStatus",
+          "description": "The status of a stream is affected by API calls made on a stream object"
+        },
+        "input_status": {
+          "$ref": "#/definitions/v1InputStatus",
+          "description": "The status of a stream's ingest is affected by the state of the encoder that's sending video data to the stream"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    }
+  },
+  "securityDefinitions": {
+    "ApiKeyAuth": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ]
+}

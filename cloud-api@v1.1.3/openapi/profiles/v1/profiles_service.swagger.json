@@ -1,0 +1,188 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Videocoin api",
+    "version": "1.0"
+  },
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/profiles": {
+      "get": {
+        "summary": "This API call returns a list of supported output transcoding profiles. Most notably, the items in the response list the ID of a profile which is required when creating a new stream object.",
+        "operationId": "List",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ProfileListResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when the user is not logged in.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "example": {
+                "message": "Not found",
+                "fields": null
+              }
+            }
+          }
+        },
+        "tags": [
+          "ProfilesService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "v1CapacityInfo": {
+      "type": "object",
+      "properties": {
+        "encode": {
+          "type": "number",
+          "format": "double"
+        },
+        "cpu": {
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
+    "v1Component": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/v1ComponentType"
+        },
+        "params": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Param"
+          }
+        }
+      }
+    },
+    "v1ComponentType": {
+      "type": "string",
+      "enum": [
+        "FILTER",
+        "ENCODER",
+        "MUXER",
+        "DEMUXER"
+      ],
+      "default": "FILTER"
+    },
+    "v1GetProfileResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "is_enabled": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "machine_type": {
+          "type": "string"
+        },
+        "cost": {
+          "type": "number",
+          "format": "double"
+        },
+        "components": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Component"
+          }
+        },
+        "capacity": {
+          "$ref": "#/definitions/v1CapacityInfo"
+        }
+      }
+    },
+    "v1Param": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "v1ProfileListResponse": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1ProfileResponse"
+          }
+        }
+      }
+    },
+    "v1ProfileResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "is_enabled": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "capacity": {
+          "$ref": "#/definitions/v1CapacityInfo"
+        }
+      }
+    },
+    "v1RenderResponse": {
+      "type": "object",
+      "properties": {
+        "render": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "ApiKeyAuth": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ]
+}
