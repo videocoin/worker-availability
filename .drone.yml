@@ -47,7 +47,7 @@ steps:
 
 trigger:
   branch:
-    - droneci
+    - master
   event:
     - push
     - tag
