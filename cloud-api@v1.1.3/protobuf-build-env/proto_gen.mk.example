@@ -1,0 +1,93 @@
+GRPC_CPP_PLUGIN_PATH ?= `which grpc_cpp_plugin`
+PROTOS_PATH ?= ./
+GOPATH ?= unset_please_set
+OUT_DIR_GENERATED_PROTO_FILES ?= ./
+OUT_DIR_GENERATED_3RD_PARTY_PYTHON_FILES ?= ./
+
+gen-speedtest-go:
+	mkdir -p $(OUT_DIR_GENERATED_PROTO_FILES)
+	@/bin/protoc --version
+	protoc \
+		-I/usr/local/include \
+		-I. \
+		-I${PROTOS_PATH} \
+		-I${GOPATH}/src \
+		--proto_path $(PROTOS_PATH) \
+		--gofast_out=plugins=grpc:$(OUT_DIR_GENERATED_PROTO_FILES) \
+		speedtest.proto
+
+gen-camera-go:
+	mkdir -p $(OUT_DIR_GENERATED_PROTO_FILES)
+	@/bin/protoc --version
+	protoc -I/usr/local/include \
+		-I. \
+		-I${PROTOS_PATH} \
+		-I${GOPATH}/src \
+		-I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+		--proto_path $(PROTOS_PATH) \
+		--gofast_out=plugins=grpc:$(OUT_DIR_GENERATED_PROTO_FILES) \
+		--grpc-gateway_out=logtostderr=true:$(OUT_DIR_GENERATED_PROTO_FILES) \
+		--govalidators_out=gogoimport=true:$(OUT_DIR_GENERATED_PROTO_FILES) \
+		camera_cloud.proto camera_core.proto
+
+gen-core-go:
+	mkdir -p $(OUT_DIR_GENERATED_PROTO_FILES)
+	@/bin/protoc --version
+	protoc -I/usr/local/include -I. \
+		-I${PROTOS_PATH} \
+		-I${GOPATH}/src \
+		-I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+		--proto_path $(PROTOS_PATH) \
+		--gofast_out=plugins=grpc:$(OUT_DIR_GENERATED_PROTO_FILES) \
+		--govalidators_out=$(OUT_DIR_GENERATED_PROTO_FILES) \
+		camera_core.proto
+
+gen-camera-python:
+	mkdir -p $(OUT_DIR_GENERATED_PROTO_FILES)
+	mkdir -p $(OUT_DIR_GENERATED_3RD_PARTY_PYTHON_FILES)
+	@# Generating python bindings for 3rd party Proto files
+	python3 -m grpc_tools.protoc \
+		-I/usr/local/include \
+		-I${GOPATH}/src \
+		-I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+		--python_out=$(OUT_DIR_GENERATED_3RD_PARTY_PYTHON_FILES) \
+		${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api/annotations.proto
+	@# Generating python bindings for 3rd party Proto files
+	python3 -m grpc_tools.protoc \
+		-I/usr/local/include \
+		-I${GOPATH}/src \
+		-I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+		--python_out=$(OUT_DIR_GENERATED_3RD_PARTY_PYTHON_FILES) \
+		${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api/http.proto \
+		${GOPATH}/src/github.com/gogo/protobuf/gogoproto/gogo.proto \
+		${GOPATH}/src/github.com/mwitkow/go-proto-validators/validator.proto
+	@# Live Planet's protobuffers
+	python3 -m grpc_tools.protoc \
+		-I/usr/local/include -I. \
+		-I${PROTOS_PATH} \
+		-I${GOPATH}/src \
+		-I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+		--proto_path $(PROTOS_PATH) \
+		--python_out=$(OUT_DIR_GENERATED_PROTO_FILES) \
+		--grpc_python_out=$(OUT_DIR_GENERATED_PROTO_FILES) \
+		camera_cloud.proto camera_core.proto
+		sed -i 's/import camera_core_pb2/from liveplanet.api.proto import camera_core_pb2/' $(OUT_DIR_GENERATED_PROTO_FILES)/camera_cloud_pb2.py
+		sed -i 's/import camera_core_pb2/from liveplanet.api.proto import camera_core_pb2/' $(OUT_DIR_GENERATED_PROTO_FILES)/camera_core_pb2_grpc.py
+		sed -i 's/import camera_core_pb2/from liveplanet.api.proto import camera_core_pb2/' $(OUT_DIR_GENERATED_PROTO_FILES)/camera_cloud_pb2_grpc.py
+		sed -i 's/import camera_cloud_pb2/from liveplanet.api.proto import camera_cloud_pb2/' $(OUT_DIR_GENERATED_PROTO_FILES)/camera_cloud_pb2_grpc.py
+
+gen-core-cpp:
+	mkdir -p $(OUT_DIR_GENERATED_PROTO_FILES)
+	@#Print protoc out version for C++
+	@/usr/local/bin/protoc --version
+	/usr/local/bin/protoc \
+		-I/usr/local/include -I. \
+		-I${PROTOS_PATH} \
+		-I${GOPATH}/src \
+		--grpc_out=$(OUT_DIR_GENERATED_PROTO_FILES) \
+		--plugin=protoc-gen-grpc=$(GRPC_CPP_PLUGIN_PATH) \
+		--cpp_out=$(OUT_DIR_GENERATED_PROTO_FILES) \
+		camera_core.proto
+
+list:
+	@grep '^[^#[:space:]].*:' /app/proto_gen.mk

@@ -1,0 +1,239 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "dispatcher/v1/dispatcher_service.proto",
+    "version": "version not set"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/delegator/config": {
+      "get": {
+        "operationId": "GetDelegatorConfigV2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DelegatorConfigResponse"
+            }
+          }
+        },
+        "tags": [
+          "DispatcherService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "apidispatcherv1AddInputChunkResponse": {
+      "type": "object",
+      "properties": {
+        "tx": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/v1ReceiptStatus"
+        }
+      }
+    },
+    "apivalidatorv1ValidateProofResponse": {
+      "type": "object",
+      "properties": {
+        "validate_proof_tx": {
+          "type": "string"
+        },
+        "validate_proof_tx_status": {
+          "$ref": "#/definitions/v1ReceiptStatus"
+        },
+        "scrap_proof_tx": {
+          "type": "string"
+        },
+        "scrap_proof_tx_status": {
+          "$ref": "#/definitions/v1ReceiptStatus"
+        }
+      }
+    },
+    "v1ConfigResponse": {
+      "type": "object",
+      "properties": {
+        "rpc_node_url": {
+          "type": "string"
+        },
+        "syncer_url": {
+          "type": "string"
+        },
+        "access_key": {
+          "type": "string"
+        },
+        "staking_manager_address": {
+          "type": "string"
+        }
+      }
+    },
+    "v1DelegatorConfigResponse": {
+      "type": "object",
+      "properties": {
+        "rpc_node_url": {
+          "type": "string"
+        },
+        "access_key": {
+          "type": "string"
+        }
+      }
+    },
+    "v1InternalConfigResponse": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "secret": {
+          "type": "string"
+        },
+        "client_id": {
+          "type": "string"
+        }
+      }
+    },
+    "v1PingResponse": {
+      "type": "object"
+    },
+    "v1ReceiptStatus": {
+      "type": "string",
+      "enum": [
+        "UNKNOWN",
+        "FAILED",
+        "SUCCESS"
+      ],
+      "default": "UNKNOWN"
+    },
+    "v1Task": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "owner_id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "$ref": "#/definitions/v1TaskStatus"
+        },
+        "profile_id": {
+          "type": "string"
+        },
+        "input": {
+          "$ref": "#/definitions/v1TaskInput"
+        },
+        "output": {
+          "$ref": "#/definitions/v1TaskOutput"
+        },
+        "cmdline": {
+          "type": "string"
+        },
+        "client_id": {
+          "type": "string"
+        },
+        "stream_contract_id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "stream_contract_address": {
+          "type": "string"
+        },
+        "machine_type": {
+          "type": "string"
+        },
+        "stream_id": {
+          "type": "string"
+        },
+        "has_submit_proof": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "has_validate_proof": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "has_scrap_proof": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      }
+    },
+    "v1TaskInput": {
+      "type": "object",
+      "properties": {
+        "uri": {
+          "type": "string"
+        }
+      }
+    },
+    "v1TaskOutput": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "num": {
+          "type": "string",
+          "format": "int64"
+        },
+        "duration": {
+          "type": "number",
+          "format": "double"
+        },
+        "type": {
+          "$ref": "#/definitions/v1TaskOutputType"
+        }
+      }
+    },
+    "v1TaskOutputType": {
+      "type": "string",
+      "enum": [
+        "TASK_OUTPUT_TYPE_HLS",
+        "TASK_OUTPUT_TYPE_FILE"
+      ],
+      "default": "TASK_OUTPUT_TYPE_HLS"
+    },
+    "v1TaskStatus": {
+      "type": "string",
+      "enum": [
+        "CREATED",
+        "PENDING",
+        "ASSIGNED",
+        "ENCODING",
+        "COMPLETED",
+        "FAILED",
+        "CANCELED",
+        "PAUSED"
+      ],
+      "default": "CREATED"
+    },
+    "v1TaskType": {
+      "type": "string",
+      "enum": [
+        "VOD",
+        "LIVE",
+        "ANY"
+      ],
+      "default": "VOD"
+    }
+  }
+}

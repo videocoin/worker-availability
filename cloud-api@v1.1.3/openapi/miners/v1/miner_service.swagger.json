@@ -1,0 +1,671 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Videocoin api",
+    "version": "1.0"
+  },
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/miners": {
+      "get": {
+        "operationId": "List",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1MinerListResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when the user is not logged in.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "example": {
+                "message": "Not found",
+                "fields": null
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "MinersService"
+        ]
+      },
+      "post": {
+        "operationId": "Create",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1MinerResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when the user is not logged in.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "example": {
+                "message": "Not found",
+                "fields": null
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateMinerRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MinersService"
+        ]
+      }
+    },
+    "/api/v1/miners/all": {
+      "get": {
+        "operationId": "All",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1MinerListResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when the user is not logged in.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "example": {
+                "message": "Not found",
+                "fields": null
+              }
+            }
+          }
+        },
+        "tags": [
+          "MinersService"
+        ]
+      }
+    },
+    "/api/v1/miners/all/{id}": {
+      "get": {
+        "operationId": "GetMiner",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1MinerResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when the user is not logged in.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "example": {
+                "message": "Not found",
+                "fields": null
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "MinersService"
+        ]
+      }
+    },
+    "/api/v1/miners/{id}": {
+      "get": {
+        "operationId": "Get",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1MinerResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when the user is not logged in.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "example": {
+                "message": "Not found",
+                "fields": null
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "MinersService"
+        ]
+      },
+      "delete": {
+        "operationId": "Delete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1MinerResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when the user is not logged in.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "example": {
+                "message": "Not found",
+                "fields": null
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "MinersService"
+        ]
+      },
+      "put": {
+        "operationId": "Update",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1MinerResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when the user is not logged in.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "example": {
+                "message": "Not found",
+                "fields": null
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateMinerRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MinersService"
+        ]
+      }
+    },
+    "/api/v1/miners/{id}/tags": {
+      "put": {
+        "operationId": "SetTags",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1MinerResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when the user is not logged in.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "example": {
+                "message": "Not found",
+                "fields": null
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1SetTagsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MinersService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "minersv1Tag": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "v1CapacityInfo": {
+      "type": "object",
+      "properties": {
+        "encode": {
+          "type": "number",
+          "format": "double"
+        },
+        "cpu": {
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
+    "v1CreateMinerRequest": {
+      "type": "object",
+      "properties": {
+        "k": {
+          "type": "string"
+        },
+        "s": {
+          "type": "string"
+        }
+      }
+    },
+    "v1ForceTaskListResponse": {
+      "type": "object",
+      "properties": {
+        "ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "v1InternalMinerResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "secret": {
+          "type": "string"
+        },
+        "task_id": {
+          "type": "string"
+        }
+      }
+    },
+    "v1KeyResponse": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        }
+      }
+    },
+    "v1MinerCandidateResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "stake": {
+          "type": "number",
+          "format": "double"
+        },
+        "is_internal": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      }
+    },
+    "v1MinerListResponse": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1MinerResponse"
+          }
+        }
+      }
+    },
+    "v1MinerResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/v1MinerStatus"
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "system_info": {
+          "$ref": "#/definitions/v1SystemInfo"
+        },
+        "capacity_info": {
+          "$ref": "#/definitions/v1CapacityInfo"
+        },
+        "user_id": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "reward": {
+          "type": "number",
+          "format": "double"
+        },
+        "total_stake": {
+          "type": "number",
+          "format": "double"
+        },
+        "self_stake": {
+          "type": "number",
+          "format": "double"
+        },
+        "delegated_stake": {
+          "type": "number",
+          "format": "double"
+        },
+        "is_block": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "is_internal": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "worker_state": {
+          "$ref": "#/definitions/v1WorkerState"
+        },
+        "org_name": {
+          "type": "string"
+        },
+        "org_email": {
+          "type": "string"
+        },
+        "org_desc": {
+          "type": "string"
+        },
+        "allow_thirdparty_delegates": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "delegate_policy": {
+          "type": "string"
+        }
+      }
+    },
+    "v1MinerStatus": {
+      "type": "string",
+      "enum": [
+        "NEW",
+        "OFFLINE",
+        "IDLE",
+        "BUSY"
+      ],
+      "default": "NEW"
+    },
+    "v1MinerWithForceTaskResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "task_id": {
+          "type": "string"
+        }
+      }
+    },
+    "v1MinersCandidatesResponse": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1MinerCandidateResponse"
+          }
+        }
+      }
+    },
+    "v1MinersWithForceTaskResponse": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1MinerWithForceTaskResponse"
+          }
+        }
+      }
+    },
+    "v1PingResponse": {
+      "type": "object"
+    },
+    "v1SetTagsRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/minersv1Tag"
+          }
+        }
+      }
+    },
+    "v1SystemInfo": {
+      "type": "object",
+      "properties": {
+        "cpu_cores": {
+          "type": "number",
+          "format": "double"
+        },
+        "cpu_freq": {
+          "type": "number",
+          "format": "double"
+        },
+        "cpu_usage": {
+          "type": "number",
+          "format": "double"
+        },
+        "mem_usage": {
+          "type": "number",
+          "format": "double"
+        },
+        "mem_total": {
+          "type": "number",
+          "format": "double"
+        },
+        "latitude": {
+          "type": "number",
+          "format": "double"
+        },
+        "longitude": {
+          "type": "number",
+          "format": "double"
+        },
+        "hw": {
+          "type": "string"
+        }
+      }
+    },
+    "v1UpdateMinerRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "org_name": {
+          "type": "string"
+        },
+        "org_email": {
+          "type": "string"
+        },
+        "org_desc": {
+          "type": "string"
+        },
+        "allow_thirdparty_delegates": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "delegate_policy": {
+          "type": "string"
+        }
+      }
+    },
+    "v1WorkerState": {
+      "type": "string",
+      "enum": [
+        "BONDING",
+        "BONDED",
+        "UNBONDED",
+        "UNBONDING",
+        "UNREGISTERED"
+      ],
+      "default": "BONDING"
+    }
+  },
+  "securityDefinitions": {
+    "ApiKeyAuth": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ]
+}
