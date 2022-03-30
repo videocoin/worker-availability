@@ -2,6 +2,8 @@ module github.com/videocoin/worker-availablity
 
 go 1.18
 
+replace github.com/videocoin/cloud-api => /tmp/cloud-api
+
 require (
 	github.com/gogo/protobuf v1.3.1
 	github.com/kelseyhightower/envconfig v1.4.0
