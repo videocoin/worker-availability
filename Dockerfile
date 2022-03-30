@@ -11,11 +11,11 @@ WORKDIR /src
 COPY ./go.mod ./go.sum ./
 RUN go mod download
 COPY . .
-RUN CGO_ENABLED=0 go build -o ./build/worker-availability ./stats/job
+RUN CGO_ENABLED=0 go build -o ./build/job ./stats/job
 
 FROM alpine:3.13.6 AS worker-availability
 COPY --from=builder /user/group /user/passwd /etc/
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=builder /src/build/worker-availability /worker-availability
+COPY --from=builder /src/build/job /job
 USER nobody:nobody
-CMD ["/worker-availability"]
+CMD ["/job"]
