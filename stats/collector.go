@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"time"
 
-	stackdriver "github.com/TV4/logrus-stackdriver-formatter"
 	"github.com/gogo/protobuf/jsonpb"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/sirupsen/logrus"
@@ -50,9 +49,6 @@ func NewContext(ctx context.Context, cfg Config) (appctx Context, err error) {
 		return appctx, fmt.Errorf("invalid log level: %s", cfg.LogLevel)
 	}
 	logger.SetLevel(logLevel)
-	logger.SetFormatter(stackdriver.NewFormatter(
-		stackdriver.WithService(Service),
-	))
 	log := logrus.NewEntry(logger)
 
 	client := &http.Client{Timeout: cfg.Timeout}
